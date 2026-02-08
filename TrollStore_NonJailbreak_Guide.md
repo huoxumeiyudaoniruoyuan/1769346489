@@ -175,3 +175,26 @@ cd PayloadDir && zip -r Repacked.ipa Payload
 - **注入策略**：单 App 注入，避免全局改动  
 - **回滚**：随时保留原始 IPA 以便恢复  
 
+---
+
+## 七、打包成软件包（便于分发与复用）
+
+> 这里的“软件包”以 **可被 TrollStore 直接安装的 IPA** 为交付目标（无需越狱/Root）。  
+> 若你需要团队内部复用，可将 **注入后的 IPA** 作为最终软件包，并配套版本号与变更记录。
+
+### 1) 版本与包命名建议
+- 文件名建议包含：`AppName` + `版本号` + `Hook标识`  
+  例如：`TargetApp_3.2.1_NoAds.ipa`
+- 在 `Info.plist` 中同步维护 `CFBundleShortVersionString` / `CFBundleVersion`，便于回溯。
+
+### 2) 软件包产物清单
+- `Repacked.ipa`（可直接导入 TrollStore 安装）
+- `CHANGELOG.md`（记录 Hook 点与版本差异）
+- `README.md`（安装说明 + 兼容版本）
+
+### 3) 可选：签名与完整性校验
+```bash
+shasum -a 256 Repacked.ipa > Repacked.ipa.sha256
+```
+
+> 推荐将 `IPA + SHA256` 作为最终“软件包”发布，以避免传输损坏或被替换。
